@@ -1,0 +1,162 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.detail-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.back-button {
+  margin-bottom: 24px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.detail-header {
+  margin-bottom: 28px;
+}
+
+.course-short {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+h1 {
+  margin: 0 0 20px;
+  color: #f8fafc;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.summary-box,
+.state-card,
+.event-card {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+}
+
+.summary-box {
+  padding: 18px;
+}
+
+.summary-box span {
+  display: block;
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.summary-box strong {
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.state-card {
+  padding: 18px;
+}
+
+.error-card {
+  color: #b91c1c;
+}
+
+.event-list {
+  display: grid;
+  gap: 16px;
+}
+
+.event-card {
+  padding: 18px;
+}
+
+.event-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.event-date {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+h2 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.event-location {
+  margin: 0;
+  color: #475569;
+}
+
+.event-right {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type-pill,
+.eh-pill {
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.06);
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.event-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.done {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.open {
+  color: #b45309;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .detail-shell {
+    padding: 24px 16px 40px;
+  }
+
+  .event-main,
+  .event-footer {
+    flex-direction: column;
+  }
+}

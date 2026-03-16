@@ -9,6 +9,35 @@
     </div>
   </header>
 
+  <section class="summary-grid" *ngIf="!loading && !error">
+    <div class="summary-card">
+      <span class="summary-label">Fächer</span>
+      <strong>{{ totalCourses }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label">Gesamt EH</span>
+      <strong>{{ totalEh }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label">Absolviert</span>
+      <strong>{{ completedEh }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label">Offen</span>
+      <strong>{{ remainingEh }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span class="summary-label">Ø Fortschritt</span>
+      <strong>{{ averageProgress | number:'1.0-1' }}%</strong>
+    </div>
+  </section>
+  <br>
+  <br>
+
   <section class="state-card" *ngIf="loading">
     <p>Lade Daten...</p>
   </section>
@@ -18,7 +47,10 @@
   </section>
 
   <section class="card-grid" *ngIf="!loading && !error">
-    <article class="course-card" *ngFor="let course of progressData">
+    <article
+      class="course-card"
+      *ngFor="let course of progressData"
+      (click)="openCourse(course.courseShort)">
       <div class="card-glow"></div>
 
       <div class="card-top">

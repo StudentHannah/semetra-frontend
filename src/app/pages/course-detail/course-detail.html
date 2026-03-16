@@ -1,0 +1,50 @@
+<div class="detail-shell">
+  <button class="back-button" type="button" (click)="goBack()">← Zurück</button>
+
+  <div class="detail-header" *ngIf="!loading && !error">
+    <p class="course-short">{{ courseShort }}</p>
+    <h1>{{ courseName }}</h1>
+
+    <div class="summary-row">
+      <div class="summary-box">
+        <span>Gesamt</span>
+        <strong>{{ totalEh }} EH</strong>
+      </div>
+      <div class="summary-box">
+        <span>Vergangen</span>
+        <strong>{{ completedEh }} EH</strong>
+      </div>
+      <div class="summary-box">
+        <span>Offen</span>
+        <strong>{{ remainingEh }} EH</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="state-card" *ngIf="loading">Lade Termine...</div>
+  <div class="state-card error-card" *ngIf="error">{{ error }}</div>
+
+  <div class="event-list" *ngIf="!loading && !error">
+    <div class="event-card" *ngFor="let event of events">
+      <div class="event-main">
+        <div>
+          <p class="event-date">{{ event.start | date:'dd.MM.yyyy, HH:mm' }}</p>
+          <h2>{{ event.courseName }}</h2>
+          <p class="event-location">{{ event.location }}</p>
+        </div>
+
+        <div class="event-right">
+          <span class="type-pill">{{ event.lvType }}</span>
+          <span class="eh-pill">{{ event.eh }} EH</span>
+        </div>
+      </div>
+
+      <div class="event-footer">
+        <span>{{ event.code }}</span>
+        <span [class.done]="event.isCompleted" [class.open]="!event.isCompleted">
+          {{ event.isCompleted ? 'Vergangen' : 'Offen' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
