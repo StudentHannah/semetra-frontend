@@ -1,0 +1,72 @@
+<div class="dashboard-shell">
+  <header class="dashboard-header">
+    <div class="header-copy">
+      <p class="eyebrow">Semester Overview</p>
+      <h1>Levis Fortschritt</h1>
+      <p class="subtitle">
+        Deine IL- und UE-Fortschritte pro Fach auf einen Blick.
+      </p>
+    </div>
+  </header>
+
+  <section class="state-card" *ngIf="loading">
+    <p>Lade Daten...</p>
+  </section>
+
+  <section class="state-card error-card" *ngIf="error">
+    <p>{{ error }}</p>
+  </section>
+
+  <section class="card-grid" *ngIf="!loading && !error">
+    <article class="course-card" *ngFor="let course of progressData">
+      <div class="card-glow"></div>
+
+      <div class="card-top">
+        <div class="title-block">
+          <p class="course-short">{{ course.courseShort }}</p>
+          <h2>{{ course.courseName }}</h2>
+        </div>
+
+        <div class="percentage-pill">
+          {{ course.progressPercent | number:'1.0-1' }}%
+        </div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-meta">
+          <span>Fortschritt</span>
+          <span>{{ course.completedEh }} / {{ course.totalEh }} EH</span>
+        </div>
+
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="course.progressPercent">
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="label">Gesamt</span>
+          <strong>{{ course.totalEh }} EH</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Vergangen</span>
+          <strong>{{ course.completedEh }} EH</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Offen</span>
+          <strong>{{ course.remainingEh }} EH</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">IL / UE</span>
+          <strong>{{ course.totalIlEh }} / {{ course.totalUeEh }}</strong>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
