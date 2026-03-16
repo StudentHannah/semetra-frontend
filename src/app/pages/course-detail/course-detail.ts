@@ -66,4 +66,19 @@ export class CourseDetailComponent implements OnInit {
   get remainingEh(): number {
     return this.totalEh - this.completedEh;
   }
+
+  toggleMissed(event: CourseEvent): void {
+    console.log(event);
+    const newStatus = event.attendanceStatus === 'missed' ? 'attended' : 'missed';
+
+    this.progressService.updateAttendance(event.id, newStatus).subscribe({
+      next: () => {
+        event.attendanceStatus = newStatus;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 }

@@ -17,4 +17,11 @@ export class ProgressService {
   getCourseEvents(courseShort: string): Observable<CourseEvent[]> {
     return this.http.get<CourseEvent[]>(`/api/courses/${courseShort}/events?t=${Date.now()}`);
   }
+
+  updateAttendance(eventId: string, status: 'open' | 'attended' | 'missed') {
+    return this.http.patch(
+      `/api/events/${encodeURIComponent(eventId)}/attendance?t=${Date.now()}`,
+      { status },
+    );
+  }
 }

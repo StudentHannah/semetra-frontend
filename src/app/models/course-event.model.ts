@@ -1,4 +1,7 @@
+export type AttendanceStatus = 'open' | 'attended' | 'missed';
+
 export interface CourseEvent {
+  id: string;
   code: string;
   courseShort: string;
   courseName: string;
@@ -8,4 +11,5 @@ export interface CourseEvent {
   location: string;
   eh: number;
   isCompleted: boolean;
+  attendanceStatus: AttendanceStatus;
 }

@@ -11,7 +11,7 @@
         <strong>{{ totalEh }} EH</strong>
       </div>
       <div class="summary-box">
-        <span>Vergangen</span>
+        <span>Anwesend</span>
         <strong>{{ completedEh }} EH</strong>
       </div>
       <div class="summary-box">
@@ -24,26 +24,55 @@
   <div class="state-card" *ngIf="loading">Lade Termine...</div>
   <div class="state-card error-card" *ngIf="error">{{ error }}</div>
 
-  <div class="event-list" *ngIf="!loading && !error">
-    <div class="event-card" *ngFor="let event of events">
-      <div class="event-main">
-        <div>
-          <p class="event-date">{{ event.start | date:'dd.MM.yyyy, HH:mm' }}</p>
-          <h2>{{ event.courseName }}</h2>
-          <p class="event-location">{{ event.location }}</p>
-        </div>
-
-        <div class="event-right">
-          <span class="type-pill">{{ event.lvType }}</span>
-          <span class="eh-pill">{{ event.eh }} EH</span>
-        </div>
+  <div class="timeline" *ngIf="!loading && !error">
+    <div class="timeline-item" *ngFor="let event of events">
+      <div
+        class="timeline-marker"
+        [class.completed]="event.isCompleted && event.attendanceStatus !== 'missed'"
+        [class.missed]="event.attendanceStatus === 'missed'"
+        [class.upcoming]="!event.isCompleted">
       </div>
 
-      <div class="event-footer">
-        <span>{{ event.code }}</span>
-        <span [class.done]="event.isCompleted" [class.open]="!event.isCompleted">
-          {{ event.isCompleted ? 'Vergangen' : 'Offen' }}
-        </span>
+      <div class="timeline-card">
+        <div class="timeline-top">
+          <div class="timeline-date-block">
+            <p class="event-date">{{ event.start | date:'dd.MM.yyyy' }}</p>
+            <p class="event-time">
+              {{ event.start | date:'HH:mm' }} – {{ event.end | date:'HH:mm' }}
+            </p>
+          </div>
+
+          <div class="event-badges">
+            <span class="type-pill">{{ event.lvType }}</span>
+            <span class="eh-pill">{{ event.eh }} EH</span>
+          </div>
+        </div>
+
+        <div class="timeline-body">
+          <div class="event-content">
+            <p class="event-code">{{ event.code }}</p>
+            <p class="event-location">{{ event.location }}</p>
+          </div>
+
+          <div class="event-status-block">
+  <span
+    *ngIf="!event.isCompleted"
+    class="status-text open">
+    Bevorstehend
+  </span>
+
+            <div class="attendance-toggle" *ngIf="event.isCompleted">
+              <button
+                type="button"
+                class="attendance-toggle-button"
+                [class.missed]="event.attendanceStatus === 'missed'"
+                (click)="toggleMissed(event)">
+                <span *ngIf="event.attendanceStatus !== 'missed'">✓ Anwesend</span>
+                <span *ngIf="event.attendanceStatus === 'missed'">✕ Gefehlt</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
