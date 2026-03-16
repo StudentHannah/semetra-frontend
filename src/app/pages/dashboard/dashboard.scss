@@ -11,7 +11,61 @@
 }
 
 .dashboard-header {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+  padding: 28px 32px;
+}
+
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  top: 2px;
+  position: relative;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.75);
+  max-width: 600px;
 }
 
 .eyebrow {
