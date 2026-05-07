@@ -220,10 +220,10 @@ h2 {
 
 .progress-fill {
   height: 100%;
+  width: 0%;
   border-radius: inherit;
   background: linear-gradient(90deg, #22c55e, #16a34a);
-  box-shadow: 0 0 18px rgba(34, 197, 94, 0.3);
-  transition: width 0.35s ease;
+  transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .stats-grid {
@@ -285,9 +285,9 @@ h2 {
   padding: 18px 18px 16px;
   border-radius: 24px;
   background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.82),
-      rgba(255, 255, 255, 0.68)
+    180deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 255, 255, 0.68)
   );
   border: 1px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(20px);
@@ -320,4 +320,77 @@ h2 {
 
 .course-card:active {
   transform: translateY(-2px) scale(0.995);
+}
+
+/* Motion Design: Completed Course + Confetti Support */
+.course-card.completed {
+  border-color: rgba(34, 197, 94, 0.55);
+  box-shadow:
+    0 18px 46px rgba(34, 197, 94, 0.18),
+    0 14px 36px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.course-card.completed .card-glow {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.32), transparent 70%);
+  animation: completedGlowPulse 1.8s ease-in-out infinite;
+}
+
+.completed-pill {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+
+.completed-fill {
+  background: linear-gradient(90deg, #22c55e, #84cc16, #16a34a);
+  animation: completedProgressShine 1.8s ease-in-out infinite;
+}
+
+.completed-badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  color: #15803d;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow:
+    0 8px 22px rgba(34, 197, 94, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  animation: completedBadgePop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.completed-icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+@keyframes completedBadgePop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.72); }
+  70% { opacity: 1; transform: translateY(0) scale(1.06); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes completedGlowPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.16); }
+}
+
+@keyframes completedProgressShine {
+  0%, 100% { box-shadow: 0 0 14px rgba(34, 197, 94, 0.3); }
+  50% { box-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
 }

@@ -9,28 +9,36 @@
       <p class="subtitle">
         Deine IL- und UE-Fortschritte pro Fach auf einen Blick.
       </p>
+
+      <l-jelly
+        size="100"
+        stroke="5"
+        bg-opacity="0"
+        speed="0.9"
+        color="white"
+      ></l-jelly>
     </div>
   </header>
 
   <section class="summary-grid" *ngIf="!loading && !error">
     <div class="summary-card">
       <span class="summary-label">Fächer</span>
-      <strong>{{ totalCourses }}</strong>
+      <strong>{{ animatedTotalCourses }}</strong>
     </div>
 
     <div class="summary-card">
       <span class="summary-label">Gesamt EH</span>
-      <strong>{{ totalEh }}</strong>
+      <strong>{{ animatedTotalEh }}</strong>
     </div>
 
     <div class="summary-card">
       <span class="summary-label">Absolvierte EH</span>
-      <strong>{{ completedEh }}</strong>
+      <strong>{{ animatedCompletedEh }}</strong>
     </div>
 
     <div class="summary-card">
       <span class="summary-label">Ø Fortschritt</span>
-      <strong>{{ averageProgress | number:'1.0-1' }}%</strong>
+      <strong>{{ animatedAverageProgress | number:'1.0-1' }}%</strong>
     </div>
   </section>
   <br>
@@ -46,10 +54,13 @@
 
   <section class="card-grid" *ngIf="!loading && !error">
     <article
+      #courseCard
       class="course-card"
-      *ngFor="let course of progressData"
+      [class.completed-card]="course.progressPercent >= 100"
+      [attr.data-course]="course.courseShort"
+      [style.animation-delay.ms]="i * 120"
+      *ngFor="let course of progressData; let i = index"
       (click)="openCourse(course.courseShort)">
-      <div class="card-glow"></div>
 
       <div class="card-top">
         <div class="title-block">
@@ -57,7 +68,7 @@
           <h2>{{ course.courseName }}</h2>
         </div>
 
-        <div class="percentage-pill">
+        <div class="percentage-pill" [class.completed-pill]="course.progressPercent >= 100">
           {{ course.progressPercent | number:'1.0-1' }}%
         </div>
       </div>
@@ -71,7 +82,7 @@
         <div class="progress-bar">
           <div
             class="progress-fill"
-            [style.width.%]="course.progressPercent">
+            [style.width.%]="course.animatedProgressPercent">
           </div>
         </div>
       </div>
