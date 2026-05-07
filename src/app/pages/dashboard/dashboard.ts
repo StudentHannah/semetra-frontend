@@ -15,7 +15,6 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { NgZone } from '@angular/core';
-import 'ldrs/jelly';
 import { jelly } from 'ldrs';
 
 
@@ -143,27 +142,32 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.animatedCompletedEh = 0;
     this.animatedAverageProgress = 0;
 
+    const fakeLoadingDelay = 4000;
+
     this.progressService.getProgress().subscribe({
       next: (data) => {
-        this.progressData = data.map((course) => ({
-          ...course,
-          animatedProgressPercent: 0,
-        }));
-
-        this.loading = false;
-
-        // Erst rendern lassen, dann Animation starten
-        this.cdr.detectChanges();
-
         setTimeout(() => {
-          this.animateSummaryNumbers();
-          this.observeCourseCards();
-        }, 0);
+          this.progressData = data.map((course) => ({
+            ...course,
+            animatedProgressPercent: 0,
+          }));
+
+          this.loading = false;
+
+          this.cdr.detectChanges();
+
+          setTimeout(() => {
+            this.animateSummaryNumbers();
+            this.observeCourseCards();
+          }, 0);
+        }, fakeLoadingDelay);
       },
       error: () => {
-        this.error = 'Daten konnten nicht geladen werden.';
-        this.loading = false;
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.error = 'Daten konnten nicht geladen werden.';
+          this.loading = false;
+          this.cdr.detectChanges();
+        }, fakeLoadingDelay);
       },
     });
   }

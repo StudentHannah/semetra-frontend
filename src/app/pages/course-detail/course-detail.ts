@@ -17,6 +17,7 @@ export class CourseDetailComponent implements OnInit {
   private progressService = inject(ProgressService);
   private cdr = inject(ChangeDetectorRef);
 
+
   courseShort = '';
   courseName = '';
   events: CourseEvent[] = [];
