@@ -17,7 +17,6 @@ import {
 import { NgZone } from '@angular/core';
 import { jelly } from 'ldrs';
 
-
 type AnimatedCourseProgress = CourseProgress & {
   animatedProgressPercent: number;
 };
@@ -35,6 +34,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private progressService = inject(ProgressService);
   private router = inject(Router);
   private ngZone = inject(NgZone);
+
   animatedTotalCourses = 0;
   animatedTotalEh = 0;
   animatedCompletedEh = 0;
@@ -68,9 +68,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   get averageProgress(): number {
     if (this.progressData.length === 0) return 0;
-
     const total = this.progressData.reduce((sum, course) => sum + course.progressPercent, 0);
-
     return total / this.progressData.length;
   }
 
@@ -86,9 +84,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   private animateSummaryNumbers(): void {
-    if (this.summaryAnimationStarted) {
-      return;
-    }
+    if (this.summaryAnimationStarted) return;
 
     this.summaryAnimationStarted = true;
 
@@ -100,8 +96,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const targetCompletedEh = this.completedEh;
     const targetAverageProgress = this.averageProgress;
 
-    // Eine durchgehende Kurve:
-    // startet schnell, wird dann immer langsamer, ohne harten Übergang
+    // Startet schnell, wird dann immer langsamer
     const smoothFastStartSlowEnd = (t: number): number => {
       return 1 - Math.pow(1 - t, 7);
     };
@@ -126,12 +121,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.animatedTotalEh = targetTotalEh;
       this.animatedCompletedEh = targetCompletedEh;
       this.animatedAverageProgress = targetAverageProgress;
-
       this.cdr.detectChanges();
     };
 
     requestAnimationFrame(animate);
   }
+
   loadProgress(): void {
     this.loading = true;
     this.error = '';
@@ -153,7 +148,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           }));
 
           this.loading = false;
-
           this.cdr.detectChanges();
 
           setTimeout(() => {
@@ -185,15 +179,26 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           const cardElement = entry.target as HTMLElement;
           const courseShort = cardElement.dataset['course'];
 
-          // ── NEU: Card einblenden ──────────────────────────
+          // Entry-Animation starten
           cardElement.classList.add('card-visible');
+
+          // Nach der Entry-Animation: animation entfernen damit
+          // Hover-Transitions auf transform wieder funktionieren
+          cardElement.addEventListener(
+            'animationend',
+            () => {
+              cardElement.style.animation = 'none';
+              cardElement.style.opacity = '1';
+            },
+            { once: true },
+          );
 
           if (!courseShort) return;
 
           const course = this.progressData.find((c) => c.courseShort === courseShort);
           if (!course) return;
 
-          // Progress Bar Fill-In (war schon drin)
+          // Progress Bar Fill-In
           course.animatedProgressPercent = course.progressPercent;
           this.cdr.detectChanges();
 
@@ -208,35 +213,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       },
       {
         rootMargin: '0px 0px 50px 0px',
-      },
-    );
-
-    this.courseCards.forEach((card) => {
-      observer.observe(card.nativeElement);
-    });
-  }
-
-  private observeCompletedCards(): void {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const cardElement = entry.target as HTMLElement;
-          const courseShort = cardElement.dataset['course'];
-
-          if (
-            entry.isIntersecting &&
-            cardElement.classList.contains('completed-card') &&
-            courseShort &&
-            !this.confettiTriggeredCourses.has(courseShort)
-          ) {
-            this.confettiTriggeredCourses.add(courseShort);
-            this.launchConfettiAtCard(cardElement);
-            observer.unobserve(cardElement);
-          }
-        });
-      },
-      {
-        threshold: 0.65,
       },
     );
 
@@ -265,10 +241,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         spread: 60,
         startVelocity: 32,
         scalar: 0.8,
-        origin: {
-          x: Math.max(0.1, x - 0.12),
-          y,
-        },
+        origin: { x: Math.max(0.1, x - 0.12), y },
       });
 
       confetti({
@@ -276,10 +249,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         spread: 60,
         startVelocity: 32,
         scalar: 0.8,
-        origin: {
-          x: Math.min(0.9, x + 0.12),
-          y,
-        },
+        origin: { x: Math.min(0.9, x + 0.12), y },
       });
     }, 180);
   }

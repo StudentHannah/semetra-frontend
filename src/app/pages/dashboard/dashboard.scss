@@ -1,3 +1,10 @@
+// ─────────────────────────────────────────────
+// dashboard.scss
+// ─────────────────────────────────────────────
+
+
+// ─── Host & Shell ─────────────────────────────
+
 :host {
   display: block;
   min-height: 100vh;
@@ -10,6 +17,9 @@
   padding: 48px 24px 64px;
 }
 
+
+// ─── Header ───────────────────────────────────
+
 .dashboard-header {
   margin-bottom: 28px;
   padding: 28px 32px;
@@ -19,25 +29,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.eyebrow {
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
-  margin: 0;
 }
 
 .title-row {
@@ -50,31 +41,8 @@
   width: 48px;
   height: 48px;
   object-fit: contain;
-  top: 2px;
   position: relative;
-}
-
-h1 {
-  margin: 0;
-  font-size: 1.9rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  margin: 0;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.75);
-  max-width: 600px;
-}
-
-.eyebrow {
-  margin: 0 0 10px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  top: 2px;
 }
 
 h1 {
@@ -86,6 +54,15 @@ h1 {
   color: #f8fafc;
 }
 
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .subtitle {
   margin: 14px 0 0;
   max-width: 720px;
@@ -93,6 +70,9 @@ h1 {
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.68);
 }
+
+
+// ─── State Cards (loading / error) ────────────
 
 .state-card {
   padding: 20px 22px;
@@ -111,10 +91,66 @@ h1 {
   color: #b91c1c;
 }
 
+
+// ─── Summary Grid ─────────────────────────────
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.summary-card {
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.68));
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.summary-card strong {
+  font-size: 1.8rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+}
+
+
+// ─── Card Grid ────────────────────────────────
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
   gap: 20px;
+}
+
+
+// ─── Course Card ──────────────────────────────
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .course-card {
@@ -122,37 +158,63 @@ h1 {
   overflow: hidden;
   border-radius: 30px;
   padding: 22px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.74));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.74));
   border: 1px solid rgba(255, 255, 255, 0.42);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   box-shadow:
     0 14px 36px rgba(15, 23, 42, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.58);
+  cursor: pointer;
+  opacity: 0;
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s ease;
+}
+
+.course-card.card-visible {
+  animation: cardEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .course-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.75);
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
-    0 22px 50px rgba(15, 23, 42, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+    0 28px 56px rgba(15, 23, 42, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
+
+.course-card:active {
+  transform: translateY(-2px);
+}
+
+
+// ─── Card Glow ────────────────────────────────
 
 .card-glow {
   position: absolute;
-  top: -40px;
-  right: -20px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.18), transparent 70%);
+  top: -50px;
+  right: -30px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(99, 179, 237, 0.15), transparent 70%);
+  border-radius: 50%;
   pointer-events: none;
+  opacity: 0.6;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
 }
+
+.course-card:hover .card-glow {
+  transform: scale(1.5);
+  opacity: 1;
+}
+
+
+// ─── Card Inner Layout ────────────────────────
 
 .card-top {
   position: relative;
@@ -196,6 +258,9 @@ h2 {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
+
+// ─── Progress Bar ─────────────────────────────
+
 .progress-section {
   margin-bottom: 22px;
 }
@@ -226,6 +291,9 @@ h2 {
   transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+
+// ─── Stats Grid ───────────────────────────────
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -254,76 +322,10 @@ h2 {
   color: #0f172a;
 }
 
-@media (max-width: 640px) {
-  .dashboard-shell {
-    padding: 28px 16px 40px;
-  }
 
-  .course-card {
-    padding: 18px;
-    border-radius: 24px;
-  }
+// ─── Completed Card ───────────────────────────
 
-  .card-top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.summary-card {
-  padding: 18px 18px 16px;
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(255, 255, 255, 0.68)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 12px 30px rgba(15, 23, 42, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.summary-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #64748b;
-}
-
-.summary-card strong {
-  font-size: 1.8rem;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: #0f172a;
-}
-
-.course-card {
-  cursor: pointer;
-}
-
-.course-card:active {
-  transform: translateY(-2px) scale(0.995);
-}
-
-/* Motion Design: Completed Course + Confetti Support */
-.course-card.completed {
+.course-card.completed-card {
   border-color: rgba(34, 197, 94, 0.55);
   box-shadow:
     0 18px 46px rgba(34, 197, 94, 0.18),
@@ -331,7 +333,7 @@ h2 {
     inset 0 1px 0 rgba(255, 255, 255, 0.58);
 }
 
-.course-card.completed .card-glow {
+.course-card.completed-card .card-glow {
   background: radial-gradient(circle, rgba(34, 197, 94, 0.32), transparent 70%);
   animation: completedGlowPulse 1.8s ease-in-out infinite;
 }
@@ -380,38 +382,40 @@ h2 {
 }
 
 @keyframes completedBadgePop {
-  0% { opacity: 0; transform: translateY(8px) scale(0.72); }
-  70% { opacity: 1; transform: translateY(0) scale(1.06); }
+  0%   { opacity: 0; transform: translateY(8px) scale(0.72); }
+  70%  { opacity: 1; transform: translateY(0) scale(1.06); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes completedGlowPulse {
   0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.16); }
+  50%       { opacity: 1;   transform: scale(1.16); }
 }
 
 @keyframes completedProgressShine {
   0%, 100% { box-shadow: 0 0 14px rgba(34, 197, 94, 0.3); }
-  50% { box-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
+  50%       { box-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
 }
 
 
-// ─── Card Stagger Entry ───────────────────────────────────────────
-@keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.97);
+// ─── Responsive ───────────────────────────────
+
+@media (max-width: 640px) {
+  .dashboard-shell {
+    padding: 28px 16px 40px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+
+  .course-card {
+    padding: 18px;
+    border-radius: 24px;
   }
-}
 
-.course-card {
-  opacity: 0; // startet unsichtbar
-}
+  .card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.course-card.card-visible {
-  animation: cardEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
