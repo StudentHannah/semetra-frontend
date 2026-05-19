@@ -264,3 +264,34 @@ h1 {
     align-items: flex-start;
   }
 }
+.event-badges {
+  position: relative;
+  overflow: visible;
+}
+
+.badge-trophy-animation {
+  position: absolute;
+  inset: -30px -25px;
+  z-index: 20;
+  pointer-events: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent !important;
+  overflow: visible;
+}
+
+.badge-trophy-lottie {
+  width: 150px;
+  height: 120px;
+  background: transparent !important;
+  pointer-events: none;
+}
+
+.badge-trophy-lottie svg {
+  background: transparent !important;
+  overflow: visible;
+}
+

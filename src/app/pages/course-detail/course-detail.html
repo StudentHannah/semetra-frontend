@@ -45,6 +45,13 @@
           <div class="event-badges">
             <span class="type-pill">{{ event.lvType }}</span>
             <span class="eh-pill">{{ event.eh }} EH</span>
+
+            <div class="badge-trophy-animation" *ngIf="trophyEventId === event.id">
+              <div
+                class="badge-trophy-lottie"
+                [id]="'trophy-container-' + event.id">
+              </div>
+            </div>
           </div>
         </div>
 
@@ -75,5 +82,13 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="trophy-overlay" *ngIf="showTrophyAnimation">
+    <iframe
+      class="trophy-frame"
+      src="assets/pokal.html"
+      title="Pokal Animation">
+    </iframe>
   </div>
 </div>
