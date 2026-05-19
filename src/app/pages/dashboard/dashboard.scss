@@ -394,3 +394,24 @@ h2 {
   0%, 100% { box-shadow: 0 0 14px rgba(34, 197, 94, 0.3); }
   50% { box-shadow: 0 0 28px rgba(34, 197, 94, 0.65); }
 }
+
+
+// ─── Card Stagger Entry ───────────────────────────────────────────
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.course-card {
+  opacity: 0; // startet unsichtbar
+}
+
+.course-card.card-visible {
+  animation: cardEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

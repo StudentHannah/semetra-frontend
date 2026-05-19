@@ -142,7 +142,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.animatedCompletedEh = 0;
     this.animatedAverageProgress = 0;
 
-    const fakeLoadingDelay = 4000;
+    const fakeLoadingDelay = 0;
 
     this.progressService.getProgress().subscribe({
       next: (data) => {
@@ -180,39 +180,34 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
+          if (!entry.isIntersecting) return;
 
           const cardElement = entry.target as HTMLElement;
           const courseShort = cardElement.dataset['course'];
 
-          if (!courseShort) {
-            return;
-          }
+          // ── NEU: Card einblenden ──────────────────────────
+          cardElement.classList.add('card-visible');
+
+          if (!courseShort) return;
 
           const course = this.progressData.find((c) => c.courseShort === courseShort);
+          if (!course) return;
 
-          if (!course) {
-            return;
-          }
-
+          // Progress Bar Fill-In (war schon drin)
           course.animatedProgressPercent = course.progressPercent;
           this.cdr.detectChanges();
 
+          // Confetti bei 100%
           if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(courseShort)) {
             this.confettiTriggeredCourses.add(courseShort);
-
-            setTimeout(() => {
-              this.launchConfettiAtCard(cardElement);
-            }, 1450);
+            setTimeout(() => this.launchConfettiAtCard(cardElement), 1450);
           }
 
           observer.unobserve(cardElement);
         });
       },
       {
-        threshold: 0.45,
+        rootMargin: '0px 0px 50px 0px',
       },
     );
 
