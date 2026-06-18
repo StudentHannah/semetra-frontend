@@ -89,11 +89,15 @@
     <article
       #courseCard
       class="course-card"
+      role="button"
+      tabindex="0"
       [class.completed-card]="course.progressPercent >= 100"
       [attr.data-course]="course.courseShort"
       [style.animation-delay.ms]="i * 120"
       *ngFor="let course of progressData; let i = index"
-      (click)="openCourse(course.courseShort)">
+      (click)="onCourseClick(course, $event)"
+      (keydown.enter)="onCourseKey($event, course)"
+      (keydown.space)="onCourseKey($event, course)">
 
       <div class="card-top">
         <div class="title-block">

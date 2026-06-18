@@ -74,10 +74,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return this.progressData.reduce((sum, course) => sum + course.completedEh, 0);
   }
 
-  get remainingEh(): number {
-    return this.progressData.reduce((sum, course) => sum + course.remainingEh, 0);
-  }
-
   get averageProgress(): number {
     if (this.progressData.length === 0) return 0;
     const total = this.progressData.reduce((sum, course) => sum + course.progressPercent, 0);
@@ -117,6 +113,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // falls vollständig, etwas Feier-UI
     if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(course.courseShort)) {
       this.confettiTriggeredCourses.add(course.courseShort);
+      // Wechsel auf die semi_happy Animation (einmalig, nicht loop)
+      this.semiMood = 'happy';
+      this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
       setTimeout(() => this.launchConfettiAtCard(cardEl), 450);
     }
 
@@ -263,6 +262,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           // Confetti bei 100%
           if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(courseShort)) {
             this.confettiTriggeredCourses.add(courseShort);
+            // Wechsel auf die semi_happy Animation (einmalig, nicht loop)
+            this.semiMood = 'happy';
+            this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
             setTimeout(() => this.launchConfettiAtCard(cardElement), 1450);
           }
 
@@ -313,6 +315,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   private updateSemiMood(): void {
+    // Wenn mindestens ein Fach 100% oder mehr hat -> sofort semi_happy (einmalige Animation)
+    const anyCompleted = this.progressData.some((c) => c.progressPercent >= 100);
+    if (anyCompleted) {
+      this.semiMood = 'happy';
+      this.options = {
+        path: 'semi_happy.json',
+        loop: false,
+        autoplay: true,
+      };
+      return;
+    }
+
     const progress = this.averageProgress;
 
     if (progress >= 80) {
