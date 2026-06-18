@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CourseProgress } from '../../models/course-progress.model';
 import { ProgressService } from '../../services/progress';
 import { Router } from '@angular/router';
@@ -14,7 +14,6 @@ import {
   ChangeDetectorRef,
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
-import { NgZone } from '@angular/core';
 import { jelly } from 'ldrs';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
@@ -25,7 +24,7 @@ type AnimatedCourseProgress = CourseProgress & {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, LottieComponent],
+  imports: [CommonModule, LottieComponent, NgOptimizedImage],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -62,6 +61,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return this.progressData.length;
   }
 
+  // Anzahl der vollständig abgeschlossenen Fächer (100% oder mehr)
+  get completedCoursesCount(): number {
+    return this.progressData.filter((c) => c.progressPercent >= 100).length;
+  }
+
   get totalEh(): number {
     return this.progressData.reduce((sum, course) => sum + course.totalEh, 0);
   }
@@ -91,6 +95,47 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Wird ausgelöst, wenn eine Karte per Klick aktiviert wird.
+  onCourseClick(course: AnimatedCourseProgress, event: MouseEvent): void {
+    const cardEl = (event.currentTarget as HTMLElement);
+    // markiere als 'clicked' damit Fokus/Hover-Effekte sichtbar bleiben
+    cardEl.classList.add('clicked');
+
+    // Setze sofort die Breite (snap)
+    course.animatedProgressPercent = course.progressPercent;
+    this.cdr.detectChanges();
+
+    // Füge eine kurze Pulse-Animation auf das Fill-Element hinzu, damit es "animiert" wirkt,
+    // aber die Breite sofort gesprungen ist (snap behaviour)
+    const fill = cardEl.querySelector('.progress-fill') as HTMLElement | null;
+    if (fill) {
+      fill.classList.add('pulse');
+      // Entferne die Klasse nach Ende
+      setTimeout(() => fill.classList.remove('pulse'), 700);
+    }
+
+    // falls vollständig, etwas Feier-UI
+    if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(course.courseShort)) {
+      this.confettiTriggeredCourses.add(course.courseShort);
+      setTimeout(() => this.launchConfettiAtCard(cardEl), 450);
+    }
+
+    // Nach kurzer Verzögerung navigieren (nutzer sieht den Snap)
+    setTimeout(() => this.openCourse(course.courseShort), 380);
+  }
+
+  onCourseKey(ev: Event, course: AnimatedCourseProgress): void {
+    // Space/Enter soll wie Klick wirken
+    ev.preventDefault();
+    // find the focused card element
+    const focused = document.activeElement as HTMLElement | null;
+    if (focused) {
+      this.onCourseClick(course, { currentTarget: focused } as unknown as MouseEvent);
+      // navigate to course
+      this.openCourse(course.courseShort);
+    }
+  }
+
   private animateSummaryNumbers(): void {
     if (this.summaryAnimationStarted) return;
 
@@ -104,9 +149,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const targetCompletedEh = this.completedEh;
     const targetAverageProgress = this.averageProgress;
 
-    // Startet schnell, wird dann immer langsamer
+    // Exponentielles Slowdown (eased): 1 - exp(-k * t) normalized
     const smoothFastStartSlowEnd = (t: number): number => {
-      return 1 - Math.pow(1 - t, 7);
+      const k = 5; // steiler = schneller Start, langsameres Ende
+      const raw = 1 - Math.exp(-k * t);
+      const norm = 1 - Math.exp(-k);
+      return raw / norm;
     };
 
     const animate = (currentTime: number): void => {

@@ -15,9 +15,9 @@
 <div class="dashboard-shell" *ngIf="!loading && !error">
   <header class="dashboard-header">
     <div class="header-inner">
-<!--      <p class="eyebrow">Semester Overview</p>-->
+      <p class="eyebrow">Semester Overview - Semetra</p>
       <div class="title-row">
-        <h1>Semetra</h1>
+        <h1>Hallo Hannah</h1>
         <div class="semi-wrapper">
           <ng-lottie
             class="semi-mascot"
@@ -29,6 +29,22 @@
       <ng-container *ngSwitchCase="'neutral'">Solider Fortschritt.</ng-container>
       <ng-container *ngSwitchCase="'worried'">Ein paar Fächer brauchen Aufmerksamkeit.</ng-container>
     </span>
+        </div>
+
+        <!-- Trophy + completed count -->
+        <div class="trophy-wrapper" aria-hidden="false">
+          <img
+            class="trophy-icon"
+            ngSrc="pokal.svg"
+            width="36"
+            height="36"
+            alt="Pokal"
+          />
+          <div class="trophy-count" aria-label="Anzahl abgeschlossener Fächer">
+            <strong>{{ completedCoursesCount }}</strong>
+            <span class="slash">|</span>
+            <span>{{ totalCourses }}</span>
+          </div>
         </div>
       </div>
       <p class="subtitle">
