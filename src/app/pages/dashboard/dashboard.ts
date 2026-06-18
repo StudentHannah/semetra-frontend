@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { jelly } from 'ldrs';
+import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
 type AnimatedCourseProgress = CourseProgress & {
   animatedProgressPercent: number;
@@ -24,7 +25,7 @@ type AnimatedCourseProgress = CourseProgress & {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LottieComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
@@ -33,7 +34,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private progressService = inject(ProgressService);
   private router = inject(Router);
-  private ngZone = inject(NgZone);
 
   animatedTotalCourses = 0;
   animatedTotalEh = 0;
@@ -49,6 +49,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   loading = true;
   error = '';
+
+  semiMood: 'happy' | 'neutral' | 'worried' = 'neutral';
+
+  options: AnimationOptions = {
+    path: 'semi_neutral.json',
+    loop: true,
+    autoplay: true,
+  };
 
   get totalCourses(): number {
     return this.progressData.length;
@@ -146,6 +154,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             ...course,
             animatedProgressPercent: 0,
           }));
+
+          this.updateSemiMood();
 
           this.loading = false;
           this.cdr.detectChanges();
@@ -252,5 +262,36 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         origin: { x: Math.min(0.9, x + 0.12), y },
       });
     }, 180);
+  }
+
+  private updateSemiMood(): void {
+    const progress = this.averageProgress;
+
+    if (progress >= 80) {
+      this.semiMood = 'happy';
+      this.options = {
+        path: 'semi_neutral.json',
+        loop: true,
+        autoplay: true,
+      };
+      return;
+    }
+
+    if (progress >= 50) {
+      this.semiMood = 'neutral';
+      this.options = {
+        path: 'semi_neutral.json',
+        loop: true,
+        autoplay: true,
+      };
+      return;
+    }
+
+    this.semiMood = 'worried';
+    this.options = {
+      path: 'semi_worried.json',
+      loop: true,
+      autoplay: true,
+    };
   }
 }

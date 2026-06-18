@@ -15,13 +15,24 @@
 <div class="dashboard-shell" *ngIf="!loading && !error">
   <header class="dashboard-header">
     <div class="header-inner">
-      <p class="eyebrow">Semester Overview</p>
+<!--      <p class="eyebrow">Semester Overview</p>-->
       <div class="title-row">
-        <img class="logo" src="/semetra-logo.ico" alt="Semetra Logo">
         <h1>Semetra</h1>
+        <div class="semi-wrapper">
+          <ng-lottie
+            class="semi-mascot"
+            [options]="options">
+          </ng-lottie>
+
+          <span class="semi-message" [ngSwitch]="semiMood">
+      <ng-container *ngSwitchCase="'happy'">Du bist gut im Plan.</ng-container>
+      <ng-container *ngSwitchCase="'neutral'">Solider Fortschritt.</ng-container>
+      <ng-container *ngSwitchCase="'worried'">Ein paar Fächer brauchen Aufmerksamkeit.</ng-container>
+    </span>
+        </div>
       </div>
       <p class="subtitle">
-        Deine IL- und UE-Fortschritte pro Fach auf einen Blick.
+<!--        Deine IL- und UE-Fortschritte pro Fach auf einen Blick.-->
       </p>
     </div>
   </header>

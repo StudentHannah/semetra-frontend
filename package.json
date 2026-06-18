@@ -20,6 +20,7 @@
     "canvas-confetti": "^1.9.4",
     "ldrs": "^1.1.9",
     "lottie-web": "^5.13.0",
+    "ngx-lottie": "^21.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
