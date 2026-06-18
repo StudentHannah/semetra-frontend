@@ -17,6 +17,7 @@ import {
 import { jelly } from 'ldrs';
 import { StorageService } from '../../services/storage';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import type { AnimationItem } from 'lottie-web';
 
 type AnimatedCourseProgress = CourseProgress & {
   animatedProgressPercent: number;
@@ -57,11 +58,47 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   semiMood: 'happy' | 'neutral' | 'worried' = 'neutral';
 
+  // keep the currently used mascot animation path separately because AnimationOptions type
+  // does not expose a `path` property in its type definition
+  private mascotPath = 'semi_neutral.json';
   options: AnimationOptions = {
-    path: 'semi_neutral.json',
-    loop: true,
-    autoplay: true,
+    // casting to any to allow the path key at runtime (ngx-lottie accepts it)
+    // but we keep mascotPath for type-safe checks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...( { path: this.mascotPath, loop: true, autoplay: true } as any ),
   };
+
+  private mascotAnimation: AnimationItem | null = null;
+  private mascotCompleteHandler = () => {
+    // Nach der einmaligen semi_happy-Animation sicherstellen, dass die loopende Variante angezeigt wird
+    this.mascotPath = 'semi_neutral.json';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.options = ( { path: this.mascotPath, loop: true, autoplay: true } as any );
+    this.cdr.detectChanges();
+  };
+
+  onMascotCreated(anim: AnimationItem): void {
+    // Entferne vorherige Listener
+    if (this.mascotAnimation) {
+      try {
+        this.mascotAnimation.removeEventListener && this.mascotAnimation.removeEventListener('complete', this.mascotCompleteHandler);
+      } catch {
+        // ignore
+      }
+    }
+
+    this.mascotAnimation = anim;
+
+    // Wenn aktuell semi_happy abgespielt wird (nicht loop), möchten wir nach 'complete' automatisch zu semi_neutral wechseln
+    const isPlayingHappy = this.mascotPath.includes('semi_happy') && !this.options.loop;
+    if (isPlayingHappy) {
+      try {
+        anim.addEventListener && anim.addEventListener('complete', this.mascotCompleteHandler);
+      } catch {
+        // ignore
+      }
+    }
+  }
 
   get totalCourses(): number {
     return this.progressData.length;
@@ -151,7 +188,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const semiHappyPlayed = !!this.storage.getItem<boolean>('animations.semi_happy.played');
         if (!semiHappyPlayed) {
           this.semiMood = 'happy';
-          this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
+          this.mascotPath = 'semi_happy.json';
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          this.options = ( { path: this.mascotPath, loop: false, autoplay: true } as any );
           this.storage.setItem('animations.semi_happy.played', true);
         }
         // Markiere Confetti für dieses Fach als gespielt
@@ -309,7 +348,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
               const semiHappyPlayed = !!this.storage.getItem<boolean>('animations.semi_happy.played');
               if (!semiHappyPlayed) {
                 this.semiMood = 'happy';
-                this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
+                this.mascotPath = 'semi_happy.json';
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                this.options = ( { path: this.mascotPath, loop: false, autoplay: true } as any );
                 this.storage.setItem('animations.semi_happy.played', true);
               }
               this.storage.setItem(confettiKey, true);

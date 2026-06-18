@@ -21,7 +21,8 @@
         <div class="semi-wrapper">
           <ng-lottie
             class="semi-mascot"
-            [options]="options">
+            [options]="options"
+            (animationCreated)="onMascotCreated($event)">
           </ng-lottie>
 
           <span class="semi-message" [ngSwitch]="semiMood">
