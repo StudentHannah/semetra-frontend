@@ -1,13 +1,26 @@
-// ─────────────────────────────────────────────
 // dashboard.scss
-// ─────────────────────────────────────────────
-
-
-// ─── Host & Shell ─────────────────────────────
-
 :host {
   display: block;
   min-height: 100vh;
+}
+
+.loading-screen { /* Loading */
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  z-index: 1302; /* above most UI while loading */
+  background: rgba(0, 0, 0, 0.0); /* transparent overlay; change if you need a dim */
+}
+
+.loading-screen .loading-text {
+  margin: 0;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.05rem;
 }
 
 .dashboard-shell {
@@ -56,8 +69,7 @@
   pointer-events: auto;
 }
 
-/* Reset button fixed to the top-left corner of the viewport */
-.reset-animations {
+.reset-animations { /* Reset button */
   position: fixed;
   top: 12px;
   left: 12px;
@@ -82,8 +94,7 @@
   outline-offset: 2px;
 }
 
-/* Confirmation dialog placed close to the reset button */
-.reset-confirm {
+.reset-confirm { /* Reset dialog */
   position: fixed;
   top: 56px;
   left: 12px;
