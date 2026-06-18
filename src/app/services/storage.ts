@@ -61,6 +61,28 @@ export class StorageService {
     }
   }
 
+  /** Entfernt alle Keys, die mit dem gegebenen Präfix beginnen. */
+  removeByPrefix(prefix: string): void {
+    if (!this.storage) return;
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < this.storage.length; i++) {
+        const key = this.storage.key(i);
+        if (key && key.startsWith(prefix)) keysToRemove.push(key);
+      }
+
+      for (const k of keysToRemove) {
+        try {
+          this.storage.removeItem(k);
+        } catch {
+          // ignore individual failures
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   /**
    * Prüft, ob ein Schlüssel existiert.
    */

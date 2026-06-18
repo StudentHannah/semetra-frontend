@@ -31,6 +31,10 @@
     </span>
         </div>
 
+        <div class="reset-actions">
+          <button class="reset-animations" (click)="openResetConfirm()" aria-label="Animationen zurücksetzen">Animationen zurücksetzen</button>
+        </div>
+
         <!-- Trophy + completed count -->
         <div class="trophy-wrapper" aria-hidden="false">
           <img
@@ -45,6 +49,14 @@
             <span class="slash">|</span>
             <span>{{ totalCourses }}</span>
           </div>
+        </div>
+      </div>
+      <!-- Reset confirmation dialog -->
+      <div class="reset-confirm" *ngIf="resetConfirmOpen" role="dialog" aria-modal="true" aria-label="Animationen zurücksetzen">
+        <p>Alle Animation-Flags löschen, dadurch werden Einmal-Animationen wieder abgespielt. Fortfahren?</p>
+        <div class="reset-buttons">
+          <button (click)="confirmReset()" [disabled]="resetInProgress">Ja, zurücksetzen</button>
+          <button (click)="cancelReset()" [disabled]="resetInProgress">Abbrechen</button>
         </div>
       </div>
       <p class="subtitle">

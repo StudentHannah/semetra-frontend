@@ -51,6 +51,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loading = true;
   error = '';
 
+  // Reset UI state
+  resetConfirmOpen = false;
+  resetInProgress = false;
+
   semiMood: 'happy' | 'neutral' | 'worried' = 'neutral';
 
   options: AnimationOptions = {
@@ -85,6 +89,31 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loadProgress();
     jelly.register();
+  }
+
+  openResetConfirm(): void {
+    this.resetConfirmOpen = true;
+    this.cdr.detectChanges();
+  }
+
+  cancelReset(): void {
+    this.resetConfirmOpen = false;
+    this.cdr.detectChanges();
+  }
+
+  confirmReset(): void {
+    if (this.resetInProgress) return;
+    this.resetInProgress = true;
+    this.cdr.detectChanges();
+
+    // Entferne alle Animation-Flags
+    try {
+      this.storage.removeByPrefix('animations.');
+    } finally {
+      this.resetInProgress = false;
+      this.resetConfirmOpen = false;
+      this.cdr.detectChanges();
+    }
   }
 
   ngAfterViewInit(): void {
