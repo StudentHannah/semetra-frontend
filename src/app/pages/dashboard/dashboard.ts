@@ -15,6 +15,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { jelly } from 'ldrs';
+import { StorageService } from '../../services/storage';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
 type AnimatedCourseProgress = CourseProgress & {
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private progressService = inject(ProgressService);
   private router = inject(Router);
+  private storage = inject(StorageService);
 
   animatedTotalCourses = 0;
   animatedTotalEh = 0;
@@ -112,11 +114,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     // falls vollständig, etwas Feier-UI
     if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(course.courseShort)) {
-      this.confettiTriggeredCourses.add(course.courseShort);
-      // Wechsel auf die semi_happy Animation (einmalig, nicht loop)
-      this.semiMood = 'happy';
-      this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
-      setTimeout(() => this.launchConfettiAtCard(cardEl), 450);
+      const confettiKey = `animations.confetti.${course.courseShort}`;
+      const confettiPlayed = !!this.storage.getItem<boolean>(confettiKey);
+      if (!confettiPlayed) {
+        this.confettiTriggeredCourses.add(course.courseShort);
+        // Wechsel auf die semi_happy Animation (einmalig, nicht loop) wenn noch nicht gespielt
+        const semiHappyPlayed = !!this.storage.getItem<boolean>('animations.semi_happy.played');
+        if (!semiHappyPlayed) {
+          this.semiMood = 'happy';
+          this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
+          this.storage.setItem('animations.semi_happy.played', true);
+        }
+        // Markiere Confetti für dieses Fach als gespielt
+        this.storage.setItem(confettiKey, true);
+        setTimeout(() => this.launchConfettiAtCard(cardEl), 450);
+      }
     }
 
     // Nach kurzer Verzögerung navigieren (nutzer sieht den Snap)
@@ -260,12 +272,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           this.cdr.detectChanges();
 
           // Confetti bei 100%
-          if (course.progressPercent >= 100 && !this.confettiTriggeredCourses.has(courseShort)) {
-            this.confettiTriggeredCourses.add(courseShort);
-            // Wechsel auf die semi_happy Animation (einmalig, nicht loop)
-            this.semiMood = 'happy';
-            this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
-            setTimeout(() => this.launchConfettiAtCard(cardElement), 1450);
+          if (course.progressPercent >= 100) {
+            const confettiKey = `animations.confetti.${courseShort}`;
+            const confettiPlayed = !!this.storage.getItem<boolean>(confettiKey);
+            if (!confettiPlayed && !this.confettiTriggeredCourses.has(courseShort)) {
+              this.confettiTriggeredCourses.add(courseShort);
+              const semiHappyPlayed = !!this.storage.getItem<boolean>('animations.semi_happy.played');
+              if (!semiHappyPlayed) {
+                this.semiMood = 'happy';
+                this.options = { path: 'semi_happy.json', loop: false, autoplay: true };
+                this.storage.setItem('animations.semi_happy.played', true);
+              }
+              this.storage.setItem(confettiKey, true);
+              setTimeout(() => this.launchConfettiAtCard(cardElement), 1450);
+            }
           }
 
           observer.unobserve(cardElement);
@@ -317,13 +337,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private updateSemiMood(): void {
     // Wenn mindestens ein Fach 100% oder mehr hat -> sofort semi_happy (einmalige Animation)
     const anyCompleted = this.progressData.some((c) => c.progressPercent >= 100);
+    const semiHappyPlayed = !!this.storage.getItem<boolean>('animations.semi_happy.played');
     if (anyCompleted) {
-      this.semiMood = 'happy';
-      this.options = {
-        path: 'semi_happy.json',
-        loop: false,
-        autoplay: true,
-      };
+      if (!semiHappyPlayed) {
+        this.semiMood = 'happy';
+        this.options = {
+          path: 'semi_happy.json',
+          loop: false,
+          autoplay: true,
+        };
+        this.storage.setItem('animations.semi_happy.played', true);
+      } else {
+        // Zeige die loopende Variante, falls die Einmal-Animation bereits gespielt wurde
+        this.semiMood = 'happy';
+        this.options = {
+          path: 'semi_neutral.json',
+          loop: true,
+          autoplay: true,
+        };
+      }
       return;
     }
 
